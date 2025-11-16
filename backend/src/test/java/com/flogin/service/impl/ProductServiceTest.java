@@ -1,78 +1,170 @@
 package com.flogin.service.impl;
-// package com.flogin.service;
 
-// import com.flogin.dto.ProductDto;
-// import com.flogin.entity.Product; // Giả định lớp Product Entity
-// import com.flogin.repository.ProductRepository;
-// import org.junit.jupiter.api.DisplayName;
-// import org.junit.jupiter.api.Test;
-// import org.junit.jupiter.api.extension.ExtendWith;
-// import org.mockito.InjectMocks;
-// import org.mockito.Mock;
-// import org.mockito.junit.jupiter.MockitoExtension;
+import com.flogin.dto.ProductDto;
+import com.flogin.entity.Product; // Giả định lớp Product Entity
+import com.flogin.repository.ProductRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-// import java.util.Optional;
+import java.util.Optional;
 
-// import static org.junit.jupiter.api.Assertions.*;
-// import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
-// @ExtendWith(MockitoExtension.class)
-// @DisplayName("Product Service Unit Tests (CRUD)")
-// class ProductServiceTest {
+@ExtendWith(MockitoExtension.class)
+@DisplayName("Product Service Unit Tests (CRUD)")
+class ProductServiceTest {
 
-//     @Mock
-//     private ProductRepository productRepository; // Mock lớp Data Access Layer
-    
-//     @InjectMocks
-//     private ProductService productService; // Lớp cần test
+    @Mock
+    private ProductRepository productRepository;
 
-//     @Test
-//     @DisplayName("TC1: Tao san pham moi thanh cong")
-//     void testCreateProductSuccess() {
-//         // ARRANGE
-//         ProductDto productDto = new ProductDto("Laptop ABC", 15000000L, 10, "Electronics");
-//         Product productToSave = new Product(null, "Laptop ABC", 15000000L, 10, "Electronics"); // ID là null khi tạo
-//         Product savedProduct = new Product(1L, "Laptop ABC", 15000000L, 10, "Electronics"); // ID đã được generate
-        
-//         // Mocking: Khi Repository.save() được gọi với bất kỳ Product nào, nó sẽ trả về Product đã có ID
-//         when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
+    @InjectMocks
+    private ProductServiceImpl productService;
 
-//         // ACT
-//         ProductDto result = productService.createProduct(productDto);
+    @Test
+    @DisplayName("TC1: Tao san pham moi thanh cong")
+    void testCreateProductSuccess() {
+        ProductDto productDto = new ProductDto("Laptop ABC", 15000000L, 10, "Electronics");
+        Product savedProduct = new Product(1L, "Laptop ABC", 15000000L, 10, "Electronics");
 
-//         // ASSERT
-//         assertNotNull(result);
-//         assertEquals(1L, result.getId());
-//         assertEquals("Laptop ABC", result.getName());
-        
-//         // VERIFY: Đảm bảo Repository.save() đã được gọi 1 lần
-//         verify(productRepository, times(1)).save(any(Product.class));
-//     }
-    
-//     @Test
-//     @DisplayName("TC2: Lay san pham theo ID ton tai")
-//     void testGetProductByIdFound() {
-//         // ARRANGE
-//         Long productId = 1L;
-//         Product mockProduct = new Product(productId, "Mouse XYZ", 200000L, 50, "Peripherals");
-        
-//         // Mocking: Khi findById được gọi, nó trả về Optional chứa mockProduct
-//         when(productRepository.findById(productId)).thenReturn(Optional.of(mockProduct));
+        when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
 
-//         // ACT
-//         ProductDto result = productService.getProductById(productId);
+        ProductDto result = productService.createProduct(productDto);
 
-//         // ASSERT
-//         assertNotNull(result);
-//         assertEquals("Mouse XYZ", result.getName());
-        
-//         // VERIFY
-//         verify(productRepository, times(1)).findById(productId); // Bắt buộc verify theo yêu cầu bài tập
-//     }
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+        assertEquals("Laptop ABC", result.getName());
 
-//     // Sinh viên cần viết thêm các test cases cho: 
-//     // - Lấy sản phẩm không tồn tại (ném ra exception).
-//     // - Update sản phẩm (Mock findById, sau đó Mock save).
-//     // - Delete sản phẩm.
-//     // - getAll() với Pagination.
-// }
+        verify(productRepository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    @DisplayName("TC2: Lay san pham theo ID ton tai")
+    void testGetProductByIdFound() {
+        Long productId = 1L;
+        Product mockProduct = new Product(productId, "Mouse XYZ", 200000L, 50, "Peripherals");
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(mockProduct));
+
+        ProductDto result = productService.getProductById(productId);
+
+        assertNotNull(result);
+        assertEquals("Mouse XYZ", result.getName());
+
+        // VERIFY
+        verify(productRepository, times(1)).findById(productId); // Bắt buộc verify theo yêu cầu bài tập
+    }
+
+    @Test
+    @DisplayName("TC3: Lay san pham theo ID khong ton tai -> throw exception")
+    void testGetProductByIdNotFound() {
+        Long productId = 99L;
+        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> productService.getProductById(productId));
+
+        assertEquals("Product not found with id: " + productId, ex.getMessage());
+        verify(productRepository, times(1)).findById(productId);
+    }
+
+    @Test
+    @DisplayName("TC4: Cap nhat san pham thanh cong")
+    void testUpdateProductSuccess() {
+        Long productId = 1L;
+        Product existing = new Product(productId, "Old Name", 1000L, 5, "OldCat");
+        ProductDto updateDto = new ProductDto("New Name", 2000L, 10, "NewCat");
+        Product updated = new Product(productId, "New Name", 2000L, 10, "NewCat");
+
+        when(productRepository.findById(productId)).thenReturn(Optional.of(existing));
+        when(productRepository.save(any(Product.class))).thenReturn(updated);
+
+        ProductDto result = productService.updateProduct(productId, updateDto);
+
+        assertNotNull(result);
+        assertEquals("New Name", result.getName());
+        assertEquals(2000L, result.getPrice());
+        verify(productRepository, times(1)).findById(productId);
+        verify(productRepository, times(1)).save(existing);
+    }
+
+    @Test
+    @DisplayName("TC5: Xoa san pham thanh cong")
+    void testDeleteProductSuccess() {
+        Long productId = 1L;
+        when(productRepository.existsById(productId)).thenReturn(true);
+        doNothing().when(productRepository).deleteById(productId);
+
+        productService.deleteProduct(productId);
+
+        verify(productRepository, times(1)).existsById(productId);
+        verify(productRepository, times(1)).deleteById(productId);
+    }
+
+    @Test
+    @DisplayName("TC6: Xoa san pham khong ton tai -> throw exception")
+    void testDeleteProductNotFound() {
+        Long productId = 99L;
+        when(productRepository.existsById(productId)).thenReturn(false);
+
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> productService.deleteProduct(productId));
+
+        assertEquals("Product not found with id: " + productId, ex.getMessage());
+        verify(productRepository, times(1)).existsById(productId);
+        verify(productRepository, never()).deleteById(productId);
+    }
+
+    @Test
+    @DisplayName("TC7: Lay tat ca san pham (getAll) KHONG co Pagination")
+    void testGetAllProductsWithoutPagination() {
+        Product p1 = new Product(1L, "Laptop", 15000000L, 10, "Electronics");
+        Product p2 = new Product(2L, "Mouse", 200000L, 50, "Peripherals");
+
+        when(productRepository.findAll()).thenReturn(java.util.List.of(p1, p2));
+
+        java.util.List<ProductDto> result = productService.getAll();
+
+        assertEquals(2, result.size());
+        assertEquals("Laptop", result.get(0).getName());
+        assertEquals("Mouse", result.get(1).getName());
+        verify(productRepository, times(1)).findAll();
+    }
+
+    @Test
+    @DisplayName("TC8: Lay danh sach san pham co Pagination thanh cong")
+    void testGetAllProductsWithPaginationSuccess() {
+        Product p1 = new Product(1L, "Laptop", 15000000L, 10, "Electronics");
+        Product p2 = new Product(2L, "Mouse", 200000L, 50, "Peripherals");
+        java.util.List<Product> content = java.util.List.of(p1, p2);
+
+        int page = 0;
+        int size = 2;
+        long totalElements = 10L;
+
+        Page<Product> mockPage = new PageImpl<>(
+                content,
+                PageRequest.of(page, size),
+                totalElements);
+
+        when(productRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+
+        Page<ProductDto> resultPage = productService.getAll(page, size);
+
+        assertEquals(2, resultPage.getContent().size());
+        assertEquals(totalElements, resultPage.getTotalElements());
+        assertEquals("Laptop", resultPage.getContent().get(0).getName());
+
+        verify(productRepository, times(1)).findAll(any(Pageable.class));
+    }
+
+}
