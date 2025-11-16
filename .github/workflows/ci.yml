@@ -1,0 +1,40 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_DB: testdb
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+
+      - name: Build backend and run tests
+        run: |
+          cd backend
+          # Lệnh này chạy unit và integration tests của backend
+          mvn -B -DskipTests=false test
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Frontend tests
+        run: |
+          cd frontend
+          npm install
+          # Lệnh này chạy unit tests của frontend và tạo coverage report
+          npm test -- --coverage --watchAll=false

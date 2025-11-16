@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: myapp_db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile.backend
+    container_name: backend_app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: myapp_db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: ./Dockerfile.frontend
+    container_name: frontend_app
+    restart: always
+    ports:
+      - "80:80"
+
+volumes:
+  postgres_data:
