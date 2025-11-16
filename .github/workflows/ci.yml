@@ -14,27 +14,37 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v2
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Set up Java
+        uses: actions/setup-java@v2
         with:
           java-version: "17"
 
-      - name: Build backend and run tests
+      - name: Backend Tests
         run: |
           cd backend
-          # Lệnh này chạy unit và integration tests của backend
-          mvn -B -DskipTests=false test
+          ./mvnw clean test
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
         with:
           node-version: "18"
 
-      - name: Frontend tests
+      - name: Frontend Tests
         run: |
           cd frontend
           npm install
-          # Lệnh này chạy unit tests của frontend và tạo coverage report
-          npm test -- --coverage --watchAll=false
+          npm test -- --coverage 
+
+
+      # Chưa xong 
+      # - name: E2E Tests
+      #   run: |
+      #     cd frontend
+      #     npm run test:e2e
+
+      # - name: Upload Coverage
+      #   uses: codecov/codecov-action@v2
+      #   with:
+      #     files: ./frontend/coverage/lcov.info,./backend/target/site/jacoco/jacoco.xml

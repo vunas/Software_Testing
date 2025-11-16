@@ -14,3 +14,15 @@ Run frontend:
 - cd frontend
 - npm install
 - npm run dev
+
+Docker
+# Build 
+docker compose up --build
+
+
+# Khởi động tất cả service (db, backend, frontend)
+docker-compose up -d
+
+# Dừng container
+docker-compose down
+

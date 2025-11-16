@@ -19,4 +19,7 @@ public class Product {
     private Long price;
 
     private Integer quantity;
+
+    @Column(length = 50)
+    private String category;
 }
