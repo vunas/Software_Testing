@@ -15,3 +15,10 @@ postgres_data/
 .vscode/
 .idea/
 .DS_Store
+
+# Maven
+target/
+
+# Gradle
+build/
+
