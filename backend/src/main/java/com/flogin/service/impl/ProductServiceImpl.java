@@ -42,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Page<ProductDto> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
 

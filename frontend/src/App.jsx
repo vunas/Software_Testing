@@ -12,6 +12,7 @@ export default function App(){
       </nav>
       <Routes>
         <Route path='/' element={<Login/>} />
+        <Route path='/login' element={<Login/>} />
         <Route path='/products' element={<ProductForm/>} />
       </Routes>
     </BrowserRouter>

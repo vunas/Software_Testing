@@ -63,5 +63,4 @@ describe('Login Validation Tests', () => {
     });
     
     // c) Coverage >= 90% cho validation module (1 điểm) 
-    // Yêu cầu này được đáp ứng bằng việc đảm bảo các tests trên cover tất cả các nhánh logic trong hàm validateUsername và validatePassword.
 });

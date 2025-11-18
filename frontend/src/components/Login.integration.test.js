@@ -9,6 +9,14 @@ describe("Login Component Integration Tests", () => {
     jest.clearAllMocks();
   });
 
+  test("Nên render các thành phần UI cơ bản", () => {
+    render(<Login />);
+
+    expect(screen.getByTestId("username-input")).toBeInTheDocument();
+    expect(screen.getByTestId("password-input")).toBeInTheDocument();
+    expect(screen.getByTestId("login-button")).toBeInTheDocument();
+  });
+
   test("Nên hiển thị lỗi validation khi submit form rỗng", async () => {
     render(<Login />);
     const submitButton = screen.getByTestId("login-button");
@@ -17,6 +25,9 @@ describe("Login Component Integration Tests", () => {
     await waitFor(() => {
       expect(screen.getByTestId("username-error")).toHaveTextContent(
         "Tên đăng nhập không được để trống"
+      );
+      expect(screen.getByTestId("password-error")).toHaveTextContent(
+        "Mật khẩu không được để trống" 
       );
       expect(auth.login).not.toHaveBeenCalled();
     });

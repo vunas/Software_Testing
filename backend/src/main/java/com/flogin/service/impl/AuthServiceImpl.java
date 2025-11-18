@@ -2,8 +2,9 @@ package com.flogin.service.impl;
 
 import com.flogin.dto.LoginRequest;
 import com.flogin.dto.LoginResponse;
-import com.flogin.security.JwtUtil;
 import com.flogin.service.AuthService;
+import com.flogin.service.JwtService;
+import com.flogin.validation.AuthValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,10 +18,15 @@ public class AuthServiceImpl implements AuthService {
     private AuthenticationManager authManager;
 
     @Autowired
-    private JwtUtil jwtUtil;
+    private JwtService jwtUtil;
 
     @Override
     public LoginResponse authenticate(LoginRequest request) {
+        String validationError = new AuthValidator().validate(request);
+        if (validationError != null) {
+            return new LoginResponse(false, validationError, null);
+        }
+
         try {
             authManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));

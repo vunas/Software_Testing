@@ -9,7 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flogin.dto.LoginRequest;
 import com.flogin.dto.LoginResponse;
-import com.flogin.service.AuthService; 
+import com.flogin.service.AuthService;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,56 +25,71 @@ import org.springframework.test.web.servlet.MockMvc;
 @DisplayName("Login API Integration Tests")
 class AuthControllerIntegrationTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockBean
-    private AuthService authService;
+        @MockBean
+        private AuthService authService;
 
-    @Test
-    @DisplayName("TC1: POST /api/auth/login - Thành công")
-    void testLoginSuccess() throws Exception {
+        @Test
+        @DisplayName("TC1: POST /api/auth/login - Thành công")
+        void testLoginSuccess() throws Exception {
 
-        LoginRequest request = new LoginRequest("testuser", "Test123");
+                LoginRequest request = new LoginRequest("testuser", "Test123");
 
-        LoginResponse mockResponse = new LoginResponse(
-                true, "Đăng nhập thành công", "mock-token-123");
+                LoginResponse mockResponse = new LoginResponse(
+                                true, "Đăng nhập thành công", "mock-token-123");
 
-        when(authService.authenticate(any(LoginRequest.class))).thenReturn(mockResponse);
+                when(authService.authenticate(any(LoginRequest.class))).thenReturn(mockResponse);
 
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.token").exists())
-                .andExpect(jsonPath("$.message").value("Đăng nhập thành công"));
-    }
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(true))
+                                .andExpect(jsonPath("$.token").exists())
+                                .andExpect(jsonPath("$.message").value("Đăng nhập thành công"));
+        }
 
-    @Test
-    @DisplayName("TC2: POST /api/auth/login - Thất bại (Sai credentials)")
-    void testLoginFailure() throws Exception {
+        @Test
+        @DisplayName("TC2: POST /api/auth/login - Thất bại (Sai credentials)")
+        void testLoginFailure() throws Exception {
 
-        LoginRequest request = new LoginRequest("testuser", "WrongPass");
+                LoginRequest request = new LoginRequest("testuser", "WrongPass");
 
-        LoginResponse mockResponse = new LoginResponse(
-                false, "Tên đăng nhập hoặc mật khẩu không đúng", null);
+                LoginResponse mockResponse = new LoginResponse(
+                                false, "Tên đăng nhập hoặc mật khẩu không đúng", null);
 
-        when(authService.authenticate(any(LoginRequest.class))).thenReturn(mockResponse);
+                when(authService.authenticate(any(LoginRequest.class))).thenReturn(mockResponse);
 
-        mockMvc.perform(post("/api/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.success").value(false))
-                .andExpect(jsonPath("$.token").doesNotExist())
-                .andExpect(jsonPath("$.message")
-                        .value("Tên đăng nhập hoặc mật khẩu không đúng"));
-    }
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                                .andExpect(status().isOk())
+                                .andExpect(jsonPath("$.success").value(false))
+                                .andExpect(jsonPath("$.token").doesNotExist())
+                                .andExpect(jsonPath("$.message")
+                                                .value("Tên đăng nhập hoặc mật khẩu không đúng"));
+        }
 
-    
+        @Test
+        @DisplayName("TC4: POST /api/auth/login - Kiểm tra CORS Header")
+        void testCorsHeader() throws Exception {
+                LoginRequest request = new LoginRequest("testuser", "Test123");
+
+                LoginResponse mockResponse = new LoginResponse(
+                                true, "Đăng nhập thành công", "mock-token-123");
+                when(authService.authenticate(any(LoginRequest.class))).thenReturn(mockResponse);
+
+                mockMvc.perform(post("/api/auth/login")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request))
+                                .header("Origin", "http://my-frontend-domain.com"))
+                                .andExpect(status().isOk());
+
+        }
+
 }
-

@@ -26,4 +26,20 @@ public class ProductController {
     public ResponseEntity<List<ProductDto>> getAll() {
         return ResponseEntity.ok(service.getAll());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getProductById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductDto> update(@PathVariable Long id, @RequestBody ProductDto dto) {
+        return ResponseEntity.ok(service.updateProduct(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        service.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
 }
