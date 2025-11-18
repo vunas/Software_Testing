@@ -40,6 +40,7 @@ export default function Login() {
           <br />
           <input
             data-testid="username-input"
+            type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />

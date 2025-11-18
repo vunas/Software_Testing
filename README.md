@@ -15,14 +15,25 @@ Run frontend:
 - npm install
 - npm run dev
 
-Docker
-# Build 
+# Test
+    - frontend:
+        - cd frontend
+        - npm test
+    - backend:
+        - cd backend
+        - mvn clean test
+
+e2e login
+- npx cypress run --spec cypress/e2e/login.spec.js
+
+# Docker
+ Build 
 docker compose up --build
 
 
-# Khởi động tất cả service (db, backend, frontend)
+- Khởi động tất cả service (db, backend, frontend)
 docker-compose up -d
 
-# Dừng container
+- Dừng container
 docker-compose down
 
