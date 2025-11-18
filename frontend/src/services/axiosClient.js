@@ -1,12 +1,16 @@
 import axios from "axios";
-import queryString from "query-string";
+
+const baseURL = "http://localhost:8080/api";
 
 const axiosClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/api",
+  baseURL,
   headers: {
     "content-type": "application/json",
   },
-  paramsSerializer: (params) => queryString.stringify(params),
+  paramsSerializer: (params) => {
+    const searchParams = new URLSearchParams(params);
+    return searchParams.toString();
+  },
 });
 
 axiosClient.interceptors.request.use(async (config) => {
