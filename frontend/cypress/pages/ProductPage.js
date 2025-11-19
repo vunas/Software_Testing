@@ -1,16 +1,25 @@
 class ProductPage {
   visit() {
-    cy.visit("/products");
+    cy.visit("/product-list");
   }
 
   clickAddNew() {
-    cy.get('[data-testid="add-product-btn"]').click();
+    cy.get('[data-testid="add-new-btn"]').click();
+  }
+
+  openFormModal() {
+    cy.get('div[style*="background-color: rgba(0, 0, 0, 0.6)"]').should(
+      "be.visible"
+    );
+  }
+
+  closeFormModal() {
+    cy.get('[data-testid="close-modal-btn"]').click();
   }
 
   fillProductForm(product) {
-    cy.get('[data-testid="product-name"]').type(product.name);
-    cy.get('[data-testid="product-price"]').type(product.price);
-    cy.get('[data-testid="product-quantity"]').type(product.quantity);
+    cy.get('[data-testid="product-name-input"]').clear().type(product.name);
+    cy.get('[data-testid="product-price-input"]').clear().type(product.price);
   }
 
   submitForm() {
@@ -26,15 +35,19 @@ class ProductPage {
   }
 
   clickEditButton(name) {
-    this.getProductInList(name).find('[data-testid="edit-btn"]').click();
+    this.getProductInList(name).find('[data-testid^="edit-btn-"]').click();
   }
 
   clickDeleteButton(name) {
-    this.getProductInList(name).find('[data-testid="delete-btn"]').click();
+    this.getProductInList(name).find('[data-testid^="delete-btn-"]').click();
   }
 
-  confirmDelete() {
-    cy.get('[data-testid="confirm-delete"]').click();
+  fillSearchInput(keyword) {
+    cy.get('[data-testid="search-input"]').clear().type(keyword);
+  }
+
+  selectSortByNewest() {
+    cy.get('[data-testid="sort-select"]').select("id-desc");
   }
 }
 

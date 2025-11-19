@@ -90,7 +90,10 @@ describe("Product Management Mock Tests (Full CRUD)", () => {
   });
 
   test("READ: Hiển thị danh sách sản phẩm thành công", async () => {
-    mockedGetProducts.mockResolvedValue(mockList);
+    mockedGetProducts.mockResolvedValue({
+      content: mockList,
+      totalPages: 1,
+    });
 
     render(<ProductList />);
 
@@ -116,7 +119,10 @@ describe("Product Management Mock Tests (Full CRUD)", () => {
   test("DELETE: Xóa sản phẩm thành công", async () => {
     window.confirm = jest.fn(() => true);
 
-    mockedGetProducts.mockResolvedValue(mockList);
+    mockedGetProducts.mockResolvedValue({
+      content: mockList,
+      totalPages: 1,
+    });
 
     mockedDeleteProduct.mockResolvedValue({ success: true });
 
@@ -139,7 +145,10 @@ describe("Product Management Mock Tests (Full CRUD)", () => {
   test("DELETE: Lỗi xóa thất bại", async () => {
     window.confirm = jest.fn(() => true);
 
-    mockedGetProducts.mockResolvedValue(mockList);
+    mockedGetProducts.mockResolvedValue({
+      content: mockList,
+      totalPages: 1,
+    });
 
     mockedDeleteProduct.mockRejectedValue(new Error("Delete Error"));
 

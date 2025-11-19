@@ -1,20 +1,32 @@
 import axiosClient from "./axiosClient";
 
-const PRODUCT_BASE_URL = "/products"; 
-
-// ----------------------------------------
-// 1. READ OPERATIONS
-// ----------------------------------------
+const PRODUCT_BASE_URL = "/products";
 
 /**
  * Lấy danh sách sản phẩm (có hỗ trợ phân trang).
  * API: GET /api/products?page=...&size=...
  */
-export const getProducts = async (page = 1, size = 2, sortBy = "id") => {
-  // AxiosClient tự động xử lý baseURL và Authorization Header
-  return axiosClient.get(PRODUCT_BASE_URL, {
-    params: { page, size, sortBy },
-  });
+export const getProducts = async (
+  page = 0,
+  size = 2,
+  search = "",
+  category = "",
+  sortBy = "id",
+  sortDir = "asc"
+) => {
+  const params = new URLSearchParams();
+
+  params.append("page", page);
+  params.append("size", size);
+
+  if (search) params.append("name", search);
+  if (category) params.append("category", category);
+  if (sortBy) {
+    params.append("sortBy", sortBy);
+    params.append("sortDir", sortDir);
+  }
+
+  return axiosClient.get(`/products?${params.toString()}`);
 };
 
 /**
