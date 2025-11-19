@@ -10,7 +10,7 @@ const PRODUCT_BASE_URL = "/products";
  * Lấy danh sách sản phẩm (có hỗ trợ phân trang).
  * API: GET /api/products?page=...&size=...
  */
-export const getProducts = async (page = 0, size = 10, sortBy = "id") => {
+export const getProducts = async (page = 1, size = 2, sortBy = "id") => {
   // AxiosClient tự động xử lý baseURL và Authorization Header
   return axiosClient.get(PRODUCT_BASE_URL, {
     params: { page, size, sortBy },

@@ -30,7 +30,7 @@ describe("Product Form Integration Tests", () => {
       target: { value: "10" },
     });
 
-    fireEvent.click(screen.getByText("Lưu"));
+    fireEvent.click(screen.getByTestId("submit-btn"));
 
     await waitFor(() => {
       expect(productService.createProduct).toHaveBeenCalledTimes(1);
@@ -51,7 +51,7 @@ describe("Product Form Integration Tests", () => {
       target: { value: "5" },
     });
 
-    fireEvent.click(screen.getByText("Lưu"));
+    fireEvent.click(screen.getByTestId("submit-btn"));
 
     await waitFor(() => {
       expect(productService.createProduct).not.toHaveBeenCalled();
