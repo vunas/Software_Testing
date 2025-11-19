@@ -2,7 +2,7 @@ name: Login Tests CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, vu]
   pull_request:
     branches: [main]
 
@@ -41,7 +41,7 @@ jobs:
       - name: Run Login Unit Tests
         run: |
           cd frontend
-          npm test -- --testPathPattern Login
+          npm test -- --coverage --testPathPatterns Login
 
       - name: Start Frontend in Background (Port 5173)
         run: |
