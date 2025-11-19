@@ -2,9 +2,9 @@ name: Login Tests CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   test-login:
@@ -13,10 +13,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Make Maven wrapper executable
+        run: chmod +x ./backend/mvnw
+
+      - name: Start Backend in Background (Port 8080)
+        run: |
+          cd backend
+
+          ./mvnw spring-boot:run & 
+
+          sleep 20
+
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: |
@@ -28,7 +45,17 @@ jobs:
           cd frontend
           npm test --testPathPattern Login
 
+      - name: Start Frontend in Background (Port 5173)
+        run: |
+          cd frontend
+
+          npm run dev & 
+
+          sleep 10
+
       - name: Run Login E2E Tests
         run: |
           cd frontend
           npm run test:e2e:spec -- "cypress/e2e/login.spec.js"
+        env:
+          BASE_URL: http://localhost:5173
