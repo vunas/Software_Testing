@@ -1,6 +1,5 @@
 package com.flogin.service.impl;
 
-
 import com.flogin.dto.ProductDto;
 import com.flogin.entity.Product;
 import com.flogin.repository.ProductRepository;
@@ -15,10 +14,14 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import java.util.Collections;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,22 +50,31 @@ class ProductServiceMockTest {
     }
 
     @Test
-    @DisplayName("Mock: Lấy danh sách có phân trang")
+    @DisplayName("Mock: Lấy danh sách có phân trang + filter mặc định")
     void testGetAllWithPagination() {
+    
         int page = 0;
         int size = 10;
+        String nameFilter = "";
+        String categoryFilter = "";
+        String sortBy = "id";
+        String sortDir = "asc";
+
         Product p1 = new Product(1L, "Laptop", 1000L, 1, "Elec");
+        Page<Product> mockPage = new PageImpl<>(Collections.singletonList(p1),
+                PageRequest.of(page, size, Sort.by(sortBy).ascending()), 1);
 
-        Page<Product> mockPage = new PageImpl<>(Collections.singletonList(p1));
+        when(productRepository.findByNameContainingAndCategoryContaining(eq(nameFilter), eq(categoryFilter),
+                any(Pageable.class)))
+                .thenReturn(mockPage);
 
-        when(productRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
-
-        Page<ProductDto> result = productService.getAll(page, size);
+        Page<ProductDto> result = productService.getAll(page, size, nameFilter, categoryFilter, sortBy, sortDir);
 
         assertEquals(1, result.getTotalElements());
         assertEquals("Laptop", result.getContent().get(0).getName());
 
-        verify(productRepository, times(1)).findAll(any(Pageable.class));
+        verify(productRepository, times(1))
+                .findByNameContainingAndCategoryContaining(eq(nameFilter), eq(categoryFilter), any(Pageable.class));
     }
 
     @Test

@@ -59,10 +59,10 @@ jobs:
           npm run dev &
           sleep 10
 
-      # - name: E2E Tests
-      #   run: |
-      #     cd frontend
-      #     npm run test:e2e
+      - name: E2E Tests
+        run: |
+          cd frontend
+          npm run test:e2e
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v2
