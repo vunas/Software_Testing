@@ -37,3 +37,10 @@ docker-compose up -d
 - Dừng container
 docker-compose down
 
+# Cypress
+
+    - npm run test:e2e
+    
+    Chạy Login E2EE2E: npm run test:e2e:spec -- "cypress/e2e/login.spec.js"
+    Chạy Product E2E: npm run test:e2e:spec -- "cypress/e2e/product.spec.js"
+
