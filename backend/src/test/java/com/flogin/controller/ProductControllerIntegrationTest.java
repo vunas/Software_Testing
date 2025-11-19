@@ -57,7 +57,7 @@ class ProductControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("TC2: GET /api/products - Lấy danh sách sản phẩm thành công")
+    @DisplayName("TC2: GET /api/products/all - Lấy danh sách sản phẩm thành công")
     void testGetAllProducts() throws Exception {
 
         List<ProductDto> products = Arrays.asList(
@@ -66,7 +66,7 @@ class ProductControllerIntegrationTest {
 
         when(productService.getAll()).thenReturn(products);
 
-        mockMvc.perform(get("/api/products"))
+        mockMvc.perform(get("/api/products/all"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].name").value("Laptop"))

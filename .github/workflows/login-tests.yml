@@ -2,7 +2,7 @@ name: Login Tests CI
 
 on:
   push:
-    branches: [main, develop, vu]
+    branches: [main, develop]
   pull_request:
     branches: [main]
 

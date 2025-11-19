@@ -3,6 +3,8 @@ package com.flogin.controller;
 import com.flogin.dto.ProductDto;
 import com.flogin.service.ProductService;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,12 @@ public class ProductController {
             @RequestParam(defaultValue = "asc") String sortDir) {
         Page<ProductDto> result = service.getAll(page, size, name, category, sortBy, sortDir);
         System.out.println("Controller - totalElements: " + result.getTotalElements());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ProductDto>> getProducts() {
+        List<ProductDto> result = service.getAll();
         return ResponseEntity.ok(result);
     }
 

@@ -3,7 +3,6 @@ package com.flogin.controller;
 import com.flogin.dto.LoginRequest;
 import com.flogin.dto.LoginResponse;
 import com.flogin.service.AuthService;
-import com.fasterxml.jackson.databind.ObjectMapper; // Dùng để chuyển Object -> JSON string
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +26,6 @@ class AuthControllerMockTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private AuthService authService;
