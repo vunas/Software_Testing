@@ -118,7 +118,7 @@ const ProductDetail = ({ productId }) => {
 
   return (
     <div style={styles.container} data-testid="product-detail-view">
-      <h2 style={styles.header}>Chi tiết Sản phẩm</h2>
+      <h2 style={styles.header}>Chi tiết Sản phẩm:</h2>
       
       <div style={styles.row}>
         <span style={styles.label}>Tên SP:</span>

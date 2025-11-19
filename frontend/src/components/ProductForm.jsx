@@ -83,9 +83,7 @@ const ProductForm = ({ productIdToEdit = null, onSuccess }) => {
       }
       setStatus("success");
 
-      // --- QUAN TRỌNG: Gọi callback để reload list ---
-      if (onSuccess) onSuccess();
-      // ---------------------------------------------
+      if (onSuccess) onSuccess(); // Gọi callback để đóng modal và reload list
 
       // Auto hide message
       setTimeout(() => {
@@ -100,18 +98,17 @@ const ProductForm = ({ productIdToEdit = null, onSuccess }) => {
 
   const formTitle = productIdToEdit ? "Cập nhật Sản phẩm" : "Thêm Sản phẩm mới";
 
-  // --- STYLES (Giữ nguyên phần CSS đẹp) ---
+  // --- STYLES (Đã loại bỏ các style cố định về vị trí) ---
   const styles = {
     container: {
       backgroundColor: "#fff",
-      padding: "30px",
-      borderRadius: "12px",
-      boxShadow:
-        "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-      maxWidth: "600px",
-      margin: "0 auto 40px auto",
+      padding: "0px", // Bỏ padding vì modal đã có
+      borderRadius: "0px", // Bỏ border radius/box shadow vì modal đã có
+      boxShadow: "none",
+      maxWidth: "100%",
+      margin: "0", // Bỏ margin
       fontFamily: "'Segoe UI', sans-serif",
-      border: "1px solid #e5e7eb",
+      border: "none",
     },
     title: {
       fontSize: "24px",

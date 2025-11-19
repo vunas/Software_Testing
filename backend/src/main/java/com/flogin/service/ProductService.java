@@ -10,7 +10,7 @@ public interface ProductService {
 
     List<ProductDto> getAll();
 
-    public Page<ProductDto> getAll(int page, int size);
+    Page<ProductDto> getAll(int page, int size, String name, String category, String sortBy, String sortDir);
 
     ProductDto getProductById(Long id);
 

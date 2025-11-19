@@ -13,11 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -141,30 +143,44 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("TC8: Lay danh sach san pham co Pagination thanh cong")
-    void testGetAllProductsWithPaginationSuccess() {
+    @DisplayName("TC9: Lay danh sach san pham co Pagination thanh cong")
+    void testGetAllProductsWithFullParams() {
+        // Arrange: tạo data giả lập
         Product p1 = new Product(1L, "Laptop", 15000000L, 10, "Electronics");
         Product p2 = new Product(2L, "Mouse", 200000L, 50, "Peripherals");
         java.util.List<Product> content = java.util.List.of(p1, p2);
 
         int page = 0;
         int size = 2;
+        String nameFilter = "Lap";
+        String categoryFilter = "Electronics";
+        String sortBy = "price";
+        String sortDir = "desc";
         long totalElements = 10L;
 
         Page<Product> mockPage = new PageImpl<>(
                 content,
-                PageRequest.of(page, size),
+                PageRequest.of(page, size, Sort.by(sortBy).descending()),
                 totalElements);
 
-        when(productRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
+        // Mock repository method filter + pagination
+        when(productRepository.findByNameContainingAndCategoryContaining(
+                eq(nameFilter),
+                eq(categoryFilter),
+                any(Pageable.class))).thenReturn(mockPage);
 
-        Page<ProductDto> resultPage = productService.getAll(page, size);
+        // Act
+        Page<ProductDto> resultPage = productService.getAll(
+                page, size, nameFilter, categoryFilter, sortBy, sortDir);
 
+        // Assert
         assertEquals(2, resultPage.getContent().size());
         assertEquals(totalElements, resultPage.getTotalElements());
         assertEquals("Laptop", resultPage.getContent().get(0).getName());
+        assertEquals("Mouse", resultPage.getContent().get(1).getName());
 
-        verify(productRepository, times(1)).findAll(any(Pageable.class));
+        verify(productRepository, times(1))
+                .findByNameContainingAndCategoryContaining(eq(nameFilter), eq(categoryFilter), any(Pageable.class));
     }
 
 }

@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Login from "./components/Login";
 import ProductList from "./components/ProductList";
 import ProductForm from "./components/ProductForm";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { Toaster } from "sonner";
 
 export default function App() {
   const styles = {
@@ -35,6 +38,10 @@ export default function App() {
     },
   };
 
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
   const getLinkStyle = (path) => {
     // Nếu đường dẫn hiện tại trùng với path thì gộp thêm style active
     return location.pathname === path
@@ -62,6 +69,7 @@ export default function App() {
         <Route path="/products" element={<ProductForm />} />
         <Route path="/product-list" element={<ProductList />} />
       </Routes>
+      <Toaster position="bottom-right" richColors />
     </BrowserRouter>
   );
 }

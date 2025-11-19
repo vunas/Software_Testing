@@ -4,8 +4,6 @@ import com.flogin.dto.UserDto;
 import com.flogin.entity.User;
 import com.flogin.repository.UserRepository;
 import com.flogin.service.UserService;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -8,6 +8,7 @@ import com.flogin.service.ProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,11 +44,19 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductDto> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
+    public Page<ProductDto> getAll(int page, int size, String name, String category, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("asc") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Product> productPage = repo.findAll(pageable);
+        String nameFilter = (name == null || name.isEmpty()) ? "" : name;
+        String categoryFilter = (category == null || category.isEmpty()) ? "" : category;
 
+        System.out.println("nameFilter: " + nameFilter + ", categoryFilter: " + categoryFilter);
+        System.out.println("pageable: " + pageable);
+
+        Page<Product> productPage = repo.findByNameContainingAndCategoryContaining(nameFilter, categoryFilter,
+                pageable);
+        System.out.println("productPage totalElements: " + productPage.getTotalElements());
         return productPage.map(p -> new ProductDto(
                 p.getId(),
                 p.getName(),
