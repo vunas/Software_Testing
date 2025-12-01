@@ -5,6 +5,6 @@ Cypress.Commands.add("login", (username, password) => {
     username,
     password
   }).then((res) => {
-    localStorage.setItem("authToken", res.body.token);
+    window.localStorage.setItem("accessToken", res.body.token);
   });
 });

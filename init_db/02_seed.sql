@@ -1,5 +1,5 @@
 INSERT INTO users (id, username, password) VALUES
-(1, 'admin', '$2a$10$tcHs6mceGYEa74l4HDYmVO4Q3sElaYB9MMl0wLzxJoZcNSvK9/7I2'),
+(1, 'test123', '$2a$10$tcHs6mceGYEa74l4HDYmVO4Q3sElaYB9MMl0wLzxJoZcNSvK9/7I2'),
 (2, 'users', '{noop}123456a');
 
 

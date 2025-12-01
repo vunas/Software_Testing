@@ -1,5 +1,7 @@
 class ProductPage {
   visit() {
+    cy.visit("/login");
+    cy.login("test123", "Test123");
     cy.visit("/product-list");
   }
 

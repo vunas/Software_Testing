@@ -5,9 +5,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.mockito.Mockito.*;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flogin.dto.ProductDto;
+import com.flogin.security.JwtAuthenticationFilter;
 import com.flogin.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,6 +36,9 @@ class ProductControllerIntegrationTest {
 
     @MockBean
     private ProductService productService;
+
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
     @DisplayName("TC1: POST /api/products - Tạo sản phẩm mới thành công")

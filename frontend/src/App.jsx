@@ -24,7 +24,7 @@ export default function App() {
     },
     link: {
       textDecoration: "none",
-      color: "#6b7280", // Màu xám (mặc định)
+      color: "#6b7280",
       fontSize: "16px",
       fontWeight: "600",
       padding: "8px 16px",
@@ -33,8 +33,8 @@ export default function App() {
       fontFamily: "'Segoe UI', sans-serif",
     },
     activeLink: {
-      color: "#2563eb", // Màu xanh (khi đang chọn)
-      backgroundColor: "#eff6ff", // Nền xanh nhạt
+      color: "#2563eb",
+      backgroundColor: "#eff6ff",
     },
   };
 
@@ -43,10 +43,14 @@ export default function App() {
   }, []);
 
   const getLinkStyle = (path) => {
-    // Nếu đường dẫn hiện tại trùng với path thì gộp thêm style active
     return location.pathname === path
       ? { ...styles.link, ...styles.activeLink }
       : styles.link;
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    window.location.href = "/login";
   };
 
   return (
@@ -57,10 +61,17 @@ export default function App() {
           <Link to="/" style={getLinkStyle("/")}>
             Login
           </Link>
-
           <Link to="/product-list" style={getLinkStyle("/product-list")}>
             Products
           </Link>
+          {localStorage.getItem("accessToken") && (
+            <div
+              onClick={handleLogout}
+              style={{ cursor: "pointer", color: "red", fontWeight: "600" }}
+            >
+              Logout
+            </div>
+          )}{" "}
         </nav>
       </div>
       <Routes>

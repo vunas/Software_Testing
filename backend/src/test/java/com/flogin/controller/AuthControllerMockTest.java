@@ -2,6 +2,7 @@ package com.flogin.controller;
 
 import com.flogin.dto.LoginRequest;
 import com.flogin.dto.LoginResponse;
+import com.flogin.security.JwtAuthenticationFilter;
 import com.flogin.service.AuthService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,6 +30,9 @@ class AuthControllerMockTest {
 
     @MockBean
     private AuthService authService;
+    
+    @MockBean
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
     @DisplayName("Mock: Controller login thành công với mocked service")

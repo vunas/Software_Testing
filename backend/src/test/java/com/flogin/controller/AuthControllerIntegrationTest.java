@@ -9,6 +9,7 @@ import static org.mockito.ArgumentMatchers.any;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flogin.dto.LoginRequest;
 import com.flogin.dto.LoginResponse;
+import com.flogin.security.JwtAuthenticationFilter;
 import com.flogin.service.AuthService;
 
 import org.junit.jupiter.api.DisplayName;
@@ -33,6 +34,9 @@ class AuthControllerIntegrationTest {
 
         @MockBean
         private AuthService authService;
+
+        @MockBean
+        private JwtAuthenticationFilter jwtAuthenticationFilter;
 
         @Test
         @DisplayName("TC1: POST /api/auth/login - Thành công")
@@ -78,7 +82,7 @@ class AuthControllerIntegrationTest {
         @Test
         @DisplayName("TC4: POST /api/auth/login - Kiểm tra CORS Header")
         void testCorsHeader() throws Exception {
-                LoginRequest request = new LoginRequest("testuser", "Test123");
+                LoginRequest request = new LoginRequest("test123", "Test123");
 
                 LoginResponse mockResponse = new LoginResponse(
                                 true, "Đăng nhập thành công", "mock-token-123");

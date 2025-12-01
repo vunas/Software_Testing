@@ -26,6 +26,7 @@ export default function Login() {
     try {
       const res = await login(username, password);
       if (res.success) {
+        localStorage.setItem("accessToken",res.token);
         setMsg(res.message || "Đăng nhập thành công");
         setMsgType("success");
       } else {

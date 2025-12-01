@@ -19,7 +19,7 @@ describe("Login E2E Tests (5.1.2)", () => {
   });
 
   it("TC2: Đăng nhập thành công với credentials hợp lệ", () => {
-    LoginPage.fillLoginForm("admin", "Test123");
+    LoginPage.fillLoginForm("test123", "Test123");
     LoginPage.submit();
 
     LoginPage.getLoginMessage().should("contain", "Đăng nhập thành công");
